@@ -1,20 +1,26 @@
+var TS = {};
+TS.getProperty = function(obj, propName){
+    var prop = obj.state ? obj.state[propName] : obj.props[propName];
+    return prop;
+};
+
 var TypescaleList = React.createClass({
-  render: function() {
-  	var items = [];
-  	var styles = {'fontSize': this.props.basePx + 'px'};
-  	var start = parseInt(this.props.scaleStart);
-  	var end = parseInt(this.props.scaleEnd);
-	var scale = this.props.scale;
-	for (var i = start; i < end; i++) {
-	    items.push(<TypescaleListItem base={i} scale={scale} />);
-	}
-	items = items.reverse();
-    return (
-      <ol className="typescale_list" style={ styles }>
-        	{items}
-      </ol>
-    );
-  }
+    render: function() {
+      	var items = [];
+      	var styles = {'fontSize': this.props.basePx + 'px'};
+      	var start = parseInt(this.props.scaleStart);
+      	var end = parseInt(this.props.scaleEnd);
+    	var scale = this.props.scale;
+    	for (var i = start; i < end; i++) {
+    	    items.push(<TypescaleListItem base={i} scale={scale} />);
+    	}
+    	items = items.reverse();
+        return (
+          <ol className="typescale_list" style={ styles }>
+            	{items}
+          </ol>
+        );
+    }
 });
 
 var TypescaleListItem = React.createClass({
@@ -40,11 +46,7 @@ var BasePxForm = React.createClass({
     this.props.parentCallback(event.target.value);
   },
   render: function() {
-    var getProperty =  (propName) => {
-      var prop = this.state ? this.state[propName] : this.props[propName];
-      return prop;
-    };
-    var value = getProperty('value');
+    var value = TS.getProperty(this, 'value');
     return <div>
       <input type="number" min="1" value={value} onChange={this.onChange} />
     </div>;
@@ -57,11 +59,7 @@ var ScaleForm = React.createClass({
     this.props.parentCallback(event.target.value);
   },
   render: function() {
-    var getProperty =  (propName) => {
-      var prop = this.state ? this.state[propName] : this.props[propName];
-      return prop;
-    };
-    var value = getProperty('value');
+    var value = TS.getProperty(this, 'value');
     return <div>
       <input type="number" min="1" value={value} onChange={this.onChange} />
     </div>;
@@ -77,18 +75,14 @@ var AppContainer = React.createClass({
     this.setState({'scale' : scale});
   },
   render: function() {
-    var getProperty =  (propName) => {
-      var prop = this.state ? this.state[propName] : this.props[propName];
-      return prop;
-    };
-    var basePx = getProperty('basePx');
-    var scale = getProperty('scale');
+    var basePx = TS.getProperty(this, 'basePx');
+    var scale = TS.getProperty(this, 'scale');
     return <div>
     <BasePxForm value={this.props.basePx} parentCallback={this.updateBasePx} />
     <ScaleForm value={this.props.scale} parentCallback={this.updateScale} />
-      <div>
-        <TypescaleList basePx={basePx} scale={scale} scaleStart="-4" scaleEnd="4" />
-      </div>
+        <div>
+            <TypescaleList basePx={basePx} scale={scale} scaleStart="-4" scaleEnd="4" />
+        </div>
     </div>;
   }
 });
@@ -96,8 +90,8 @@ var AppContainer = React.createClass({
 
 
 ReactDOM.render(
-  <AppContainer basePx="16" scale="1.20" />,
-  document.getElementById('main')
+    <AppContainer basePx="16" scale="1.20" />,
+    document.getElementById('main')
 );
 
 
