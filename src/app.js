@@ -22,7 +22,8 @@ var TypescaleListItem = React.createClass({
   	var ems = function(power, scale){
   		return Math.pow(scale, power);
   	};
-  	var base = parseInt(this.props.base);
+    var basePx = this.state ? this.state.base : this.props.base;
+  	var base = parseInt(basePx);
   	var scale = parseFloat(this.props.scale);
   	var styles = {'fontSize' : ems(base, scale) + 'em'  };
 
@@ -36,22 +37,57 @@ var TypescaleListItem = React.createClass({
 var BasePxForm = React.createClass({
   onChange : function(event){
     this.setState({'value' : event.target.value});
+    this.props.parentCallback(event.target.value);
   },
   render: function() {
-    var value = this.state ? this.state.value : this.props.value
+    var getProperty =  (propName) => {
+      var prop = this.state ? this.state[propName] : this.props[propName];
+      return prop;
+    };
+    var value = getProperty('value');
     return <div>
-      <input type="number" id="base_px_input" min="1" value={value} onChange={this.onChange} />
+      <input type="number" min="1" value={value} onChange={this.onChange} />
+    </div>;
+  }
+});
+
+var ScaleForm = React.createClass({
+  onChange : function(event){
+    this.setState({'value' : event.target.value});
+    this.props.parentCallback(event.target.value);
+  },
+  render: function() {
+    var getProperty =  (propName) => {
+      var prop = this.state ? this.state[propName] : this.props[propName];
+      return prop;
+    };
+    var value = getProperty('value');
+    return <div>
+      <input type="number" min="1" value={value} onChange={this.onChange} />
     </div>;
   }
 });
 
 
 var AppContainer = React.createClass({
+  updateBasePx : function(basePx){
+    this.setState({'basePx' : basePx});
+  },
+  updateScale : function(scale){
+    this.setState({'scale' : scale});
+  },
   render: function() {
+    var getProperty =  (propName) => {
+      var prop = this.state ? this.state[propName] : this.props[propName];
+      return prop;
+    };
+    var basePx = getProperty('basePx');
+    var scale = getProperty('scale');
     return <div>
-    <BasePxForm value="16" />
+    <BasePxForm value={this.props.basePx} parentCallback={this.updateBasePx} />
+    <ScaleForm value={this.props.scale} parentCallback={this.updateScale} />
       <div>
-        <TypescaleList basePx="16" scale="1.20" scaleStart="-4" scaleEnd="4" />
+        <TypescaleList basePx={basePx} scale={scale} scaleStart="-4" scaleEnd="4" />
       </div>
     </div>;
   }
@@ -60,7 +96,7 @@ var AppContainer = React.createClass({
 
 
 ReactDOM.render(
-  <AppContainer />,
+  <AppContainer basePx="16" scale="1.20" />,
   document.getElementById('main')
 );
 
