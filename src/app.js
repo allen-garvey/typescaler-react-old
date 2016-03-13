@@ -1,7 +1,7 @@
 var TypescaleList = React.createClass({
   render: function() {
   	var items = [];
-  	var styles = {'font-size': this.props.basePx + 'px'};
+  	var styles = {'fontSize': this.props.basePx + 'px'};
   	var start = parseInt(this.props.scaleStart);
   	var end = parseInt(this.props.scaleEnd);
 	var scale = this.props.scale;
@@ -24,7 +24,7 @@ var TypescaleListItem = React.createClass({
   	};
   	var base = parseInt(this.props.base);
   	var scale = parseFloat(this.props.scale);
-  	var styles = {'font-size' : ems(base, scale) + 'em'  };
+  	var styles = {'fontSize' : ems(base, scale) + 'em'  };
 
     return (
       <li style={ styles }>
@@ -33,11 +33,34 @@ var TypescaleListItem = React.createClass({
     );
   }
 });
+var BasePxForm = React.createClass({
+  onChange : function(event){
+    this.setState({'value' : event.target.value});
+  },
+  render: function() {
+    var value = this.state ? this.state.value : this.props.value
+    return <div>
+      <input type="number" id="base_px_input" min="1" value={value} onChange={this.onChange} />
+    </div>;
+  }
+});
+
+
+var AppContainer = React.createClass({
+  render: function() {
+    return <div>
+    <BasePxForm value="16" />
+      <div>
+        <TypescaleList basePx="16" scale="1.20" scaleStart="-4" scaleEnd="4" />
+      </div>
+    </div>;
+  }
+});
 
 
 
 ReactDOM.render(
-  <TypescaleList basePx="16" scale="1.20" scaleStart="-4" scaleEnd="4" />,
+  <AppContainer />,
   document.getElementById('main')
 );
 
