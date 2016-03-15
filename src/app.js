@@ -61,7 +61,7 @@ var ScaleForm = React.createClass({
   render: function() {
     var value = TS.getProperty(this, 'value');
     return <div>
-      <input type="number" min="1" value={value} onChange={this.onChange} />
+      <input type="number" min="1" step="0.05" value={value} onChange={this.onChange} />
     </div>;
   }
 });
